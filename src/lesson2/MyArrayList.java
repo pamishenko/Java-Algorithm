@@ -1,12 +1,19 @@
 package lesson2;
 
+import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 
 public class MyArrayList<T extends Comparable<T>> {
     private T[] list;
     private int size = 0;
     private final int DEFAULT_CAPACITY = 10;
+    private int capacity = DEFAULT_CAPACITY;
 
+
+    private void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
 
     public MyArrayList(int capacity) {
         if (capacity < 0) {
@@ -19,12 +26,28 @@ public class MyArrayList<T extends Comparable<T>> {
         list = (T[]) new Comparable[DEFAULT_CAPACITY];
     }
 
+    @Override
+    public String toString() {
+        return "MyArrayList{\n" +
+                "list=" + Arrays.toString(list) +
+                ",\n size=" + size +
+                ",\n capacity=" + capacity +
+                '}';
+    }
+
     public void add(T item) {
+        if (size == capacity){
+            increase();
+        }
         list[size] = item;
         size++;
+
     }
 
     public void add(int index, T item) {
+        if (size == capacity){
+            increase();
+        }
         checkCorrectIndex(index);
 
         for (int i = size; i > index; i--) {
@@ -83,17 +106,6 @@ public class MyArrayList<T extends Comparable<T>> {
         return indexOf(item) > -1;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("[ ");
-        for (int i = 0; i < size; i++) {
-            sb.append(list[i]).append(", ");
-        }
-        sb.setLength(sb.length() - 2);
-        sb.append(" ]");
-        return sb.toString();
-    }
-
     private boolean less(T item1, T item2) {
         return item1.compareTo(item2) < 0;
     }
@@ -104,7 +116,20 @@ public class MyArrayList<T extends Comparable<T>> {
         list[index2] = temp;
     }
 
-    public void selectionSort() {
+    private void increase(){
+        int capacityTemp = (int)(size * 1.618);
+        T[] listTemp = (T[]) new Comparable[capacityTemp];
+        for (int i = 0; i < list.length; i++) {
+            listTemp[i] = list[i];
+        }
+        list = listTemp;
+        setCapacity(capacityTemp);
+    }
+
+
+    public String selectionSort() {
+        Date timeStart = new Date();
+
         for (int i = 0; i < size - 1; i++) {
             int iMin = i;
             for (int j = i + 1; j < size; j++) {
@@ -114,9 +139,14 @@ public class MyArrayList<T extends Comparable<T>> {
             }
             swap(i, iMin);
         }
+        Date timeEnd = new Date();
+        long time = timeEnd.getTime() - timeStart.getTime();
+        return "Сортировка выбором: " + time + "мс";
     }
 
-    public void insertionSort() {
+    public String insertionSort() {
+        Date timeStart = new Date();
+
         T key;
         for (int i = 1; i < size; i++) {
             int j = i;
@@ -127,6 +157,9 @@ public class MyArrayList<T extends Comparable<T>> {
             }
             list[j] = key;
         }
+        Date timeEnd = new Date();
+        long time = timeEnd.getTime() - timeStart.getTime();
+        return "Сортировка вставками: " + time + "мс";
     }
 
     public void bubbleSort() {
@@ -146,7 +179,9 @@ public class MyArrayList<T extends Comparable<T>> {
     }
 
 
-    public void bubbleSort(Comparator<T> comparator) {
+    public String bubbleSort(Comparator<T> comparator) {
+        Date timeStart = new Date();
+
         boolean isSwapped;
         for (int i = size - 1; i > 0; i--) {
             isSwapped = false;
@@ -157,9 +192,12 @@ public class MyArrayList<T extends Comparable<T>> {
                 }
             }
             if (!isSwapped) {
-                return;
+                break;
             }
         }
+        Date timeEnd = new Date();
+        long time = timeEnd.getTime() - timeStart.getTime();
+        return "Сортировка пузырьком: " + time + "мс";
     }
 
 }

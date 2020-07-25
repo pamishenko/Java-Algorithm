@@ -1,4 +1,4 @@
-import Lesson2.MyArrayList;
+package lesson2;
 
 public class MySortedArrayList<T extends Comparable<T>> extends MyArrayList<T> {
 
